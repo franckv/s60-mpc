@@ -48,7 +48,10 @@ def handle_client():
 
     while (True):
         try:
-            data = c.recv(1024)
+            size = int(c.recv(1024))
+            data = ''
+            while (len(data) < size):
+                data = data + c.recv(1024)
         except:
             break
 
@@ -64,7 +67,9 @@ def handle_client():
             sys.exit(0)
         
         result = handle_cmd(cmd, args)
-        c.send(pickle.dumps(result))
+        msg = pickle.dumps(result)
+        c.send(str(len(msg)))
+        c.send(msg)
 
     c.close()
 
